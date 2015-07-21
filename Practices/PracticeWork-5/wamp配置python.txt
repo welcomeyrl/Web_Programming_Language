@@ -1,0 +1,24 @@
+ WAMP支持Python CGI的配置 2012-04-04 20:55:14
+分类： WINDOWS
+不能太心急，磨刀不误砍柴功，不能一脑袋直接向目标上撞去。
+
+初始状态：默认的WAMP配置
+LoadModule cgi_module modules/mod_cgi.so
+动作:(httpd.conf中)
+1,<directory "f:/wamp/www/">中（后面添加ExecCGI）：
+Options Indexes FollowSymLinks ExecCGI
+2，<IfModule mime_module>中：
+    # AddHandler allows you to map certain file extensions to "handlers":
+    # actions unrelated to filetype. These can be either built into the server
+    # or added with the Action directive (see below)
+    #
+    # To use CGI scripts outside of ScriptAliased directories:
+    # (You will also need to add "ExecCGI" to the "Options" directive.)
+    #
+    AddHandler cgi-script .cgi .py
+3，编写的Python文件：（注意前三行,否则Internal Server Error）
+
+#!D:\Python27\python.exe
+print "Content-type:text/html"
+print
+print "hello world"

@@ -1,0 +1,6 @@
+Find geographic coordinates (latitude, longitude) of a given city by using Google's Geocoding API.  
+https://developers.google.com/maps/documentation/geocoding/
+
+You can write your program in PHP or Python.
+
+You will have a form on the html page that has one input field for the city and one submit button.

@@ -1,0 +1,57 @@
+jQuery之淡入淡出效果 
+ 
+       因为jQeury强大的选择器和和简便的动画效果，利用它来写一些简单的特效非常方便。虽然动画效果只有透明度和位置的变化，但是足以应付大多数的情况。化院首页banner处的幻灯片效果也是用jQuery写的。代码很简单。
+
+       首先分析一下整个动画效果。总体来说就是一张图片消失，另外一张图片出现。图片消失可以有一个透明度的变化过程，如果直接就消失，显得比较生硬，使用的jquery函数是fadeOut(time)，time是整个动作的持续时间。图片出现也可以有透明度的变化过程，使用的函数是fadeIn(time)。如果把一张图片消失，一张图片出现算作一个动作的话，那整个效果就是无数个相同的动作组成，只是每个动作的图片不一样。而我们要每隔一段时间就重复做一个动作的话，就要使用setTimeout和setInterval这两个函数。setTimeout是重复一次，setInterval没有次数限制。所以这里使用setInterval。setInterval的使用方式是setInterval(function(){},time)，time是动作之间的时间间隔。
+
+Html代码如下：
+
+?
+123456    <DIV class=header>  <IMG alt=化学与化学工程学院 src="/skin/hope_ce/2010_autumn/images/banner_06a.jpg"> <IMG alt=化学与化学工程学院 src="/skin/hope_ce/2010_autumn/images/banner_06b.jpg"> <IMG alt=化学与化学工程学院 src="/skin/hope_ce/2010_autumn/images/banner_06c.jpg"> </DIV> 
+
+css代码如下：
+
+?
+123456789101112 .header{  background:#fff url(images/banner_05a.jpg) no-repeat;  height:133px;  width:963px;  float:left;  position:relative; /* 相对定位，作为绝对定位的img的父级 */}  .header img {  vertical-align:top; /** 兼容IE6，去掉IE6中img下面有空隙 **/ position:absolute; /** 绝对定位，所有的图片都显示在同一个位置 **/ right:0;  } 
+
+js代码如下：
+
+?
+12345678910111213141516 <SCRIPT language=javascript type=text/javascript> $(function(){ $(".header img").fadeOut(0).eq(0).fadeIn(0);//先隐藏所有图片，再将对象移到第一张图片，使之淡入 var i = 0;//初始化图片的索引值 setInterval(function(){//setInterval是每隔一段时间循环一个动作 if($(".header img").length > (i+1)){//判断是否执行到最后一张图片 $(".header img").eq(i).fadeOut(2000).next("img").fadeIn(2000);//索引值为i的图片淡出，它的下一张图片淡入 i++;//使索引值增加1，下一次执行动作的图片索引值为i+1， } else{//如果为最后一张图片，将执行下面的代码 $(".header img").eq(i).fadeOut(2000).siblings("img").eq(0).fadeIn(2000);//索引值为i的图片淡出，这里不同于上面，是第一张图片淡入 i = 0;//将索引值变为0，回到初始状态 } },5000);//5000ms执行一次淡入淡出的动作 }) </SCRIPT> 
+
+分析一下最重要的一句话：
+
+?
+1 $(".header img").eq(i).fadeOut(2000).next("img").fadeIn(2000); 
+
+$(".header img")：选定对应的img数组；
+eq(i)：选择数组中的一张图片，i是图片的索引值；
+fadeOut(2000)：效果淡出，时间为2000ms；
+next("img")：改变对象，将操作对象移到下一张图片；
+fadeIn(2000)：效果淡入，时间为2000ms。
+
+整句话组成了一条链式操作，也可以分开写，如下：
+
+?
+12 $(".header img").eq(i).fadeOut(2000); $(".header img").eq(i).next("img").fadeIn(2000); 
+
+但分开写之后，两个动作就有先后顺序，当前面一个动作完成之后，后面的动作才会开始。从效果上来说，前面一张图片完全消失之后，后面一张图片才会逐渐出现。给人有种断开的感觉，效果没有链式操作的效果协调，可见链式操作的好处是使同一条链上的动作同时发生。
+
+       最后还涉及到一个判断。因为到最后一张图片的时候，需要再次从第一张图片开始。所以先要判断是否为最后一张图片：if($(".header img").length > (i+1) )。如果是最后一张图片，则$(".header img").length = (i+1)，执行else里面的语句。
+
+PS：最近看了一些师弟师妹的网站，发现很多人对jQuery还是没有概念。看一下jQuery的百度百科介绍。jQuery只是一个js的库，它提供了很多方法可以供我们调用，如果我们要使用jQuery，需要在你的代码之前引入jQuery(假如我们引入的jQuery版本是1.4.2)：
+
+?
+1 <SCRIPT type=text/javascript src="./jquery-1.4.2.min.js"></SCRIPT> 
+
+这里min代表的意思是压缩版，并不是jQuery的简化版，一般网站都会压缩js来节省网页的流量，不过压缩后的js基本上就看不懂了，所以如果你对jQuery的源码有兴趣，可以去下载不是min的完全版代码。src表示的是jQuery-1.4.2.min.js的路径，如果不是放在根目录下，需要自行补全路径。注意jQuery一定要在使用了jQuery的javascript代码之前引入，不然你会发现jQuery毫无作用，如下：
+
+?
+1234 <SCRIPT type=text/javascript src="./jquery-1.4.2.min.js"></SCRIPT> <SCRIPT type=text/javascript> //使用了jQuery的js代码 </SCRIPT> 
+
+为了方便，这里附上所需的jQuery库：
+
+1. jQuery官方下载地址http://docs.jquery.com/Downloading_jQuery/
+2.JQuery1.4.2min版下载 ↓请点击↓
+
+ 
